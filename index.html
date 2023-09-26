@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Event List</title>
+</head>
+<body>
+    <h1>Upcoming Events</h1>
+    <button id="loadEvents">Load Events</button>
+    <ul id="eventList">
+        <!-- List items will be inserted here -->
+    </ul>
+
+    <script>
+        document.getElementById('loadEvents').addEventListener('click', function() {
+            // Fetch data from the API
+            fetch('http://localhost:5045/eventitems')
+                .then(response => response.json())
+                .then(data => {
+                    // Get the event list element
+                    const eventList = document.getElementById('eventList');
+
+                    // Remove existing list items
+                    eventList.innerHTML = '';
+
+                    // Add each event as a list item
+                    data.forEach(event => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = event.name; // Assuming the event object has a "name" property
+                        eventList.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        });
+    </script>
+</body>
+</html>
