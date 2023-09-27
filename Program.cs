@@ -1,7 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<EventDb>(opt => opt.UseInMemoryDatabase("EventList"));
+builder.Configuration.AddJsonFile("appsettings.json");
+Console.WriteLine("First string:" + builder.Configuration.GetConnectionString("EventDbConnection"));
+
+builder.Services.AddDbContext<EventDb>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("EventDbConnection"))
+);
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddCors();
 
@@ -11,7 +16,6 @@ app.UseCors(builder =>  builder
     .AllowAnyMethod()
     .AllowAnyHeader()
 );
-    // builder.WithOrigins("http://localhost:8000")  // replace with your frontend server address
 
 
 var eventItems = app.MapGroup("/eventitems");
@@ -52,7 +56,9 @@ static async Task<IResult> UpdateEvent(int id, Event inputEvent, EventDb db)
     if (publicEvent is null) return TypedResults.NotFound();
 
     publicEvent.Name = inputEvent.Name;
-    publicEvent.IsComplete = inputEvent.IsComplete;
+    publicEvent.Name = inputEvent.Name;
+    publicEvent.Date = inputEvent.Date;
+    publicEvent.Description = inputEvent.Description;
 
     await db.SaveChangesAsync();
 
