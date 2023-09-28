@@ -53,5 +53,5 @@ jobs:
         with:
           app-name: 'arvidevents'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_02824251FB484AACB7010A7F4D883B66 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_8DDFC2F98D7D4249A890B0A174DBB2A8 }}
           package: .
