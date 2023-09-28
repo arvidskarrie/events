@@ -2,6 +2,7 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
 
+Console.WriteLine("Start of app");
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
@@ -14,11 +15,12 @@ builder.Services.AddCors();
 
 var app = builder.Build();
 app.UseCors(builder =>  builder
-    .AllowAnyOrigin()
+    .WithOrigins("https://arvidskarrie.github.io")
     .AllowAnyMethod()
     .AllowAnyHeader()
 );
 
+Console.WriteLine("Mid of app");
 
 var eventItems = app.MapGroup("/eventitems");
 eventItems.MapGet("/", GetAllEvents);
@@ -27,6 +29,7 @@ eventItems.MapPost("/", CreateEvent);
 eventItems.MapPut("/{id:int}", UpdateEvent);
 eventItems.MapDelete("/{id:int}", DeleteEvent);
 
+Console.WriteLine("Almost end of app");
 app.Run();
 
 static async Task<IResult> GetAllEvents(EventDb db)

@@ -19,7 +19,7 @@
     <script>
         document.getElementById('loadEvents').addEventListener('click', function() {
             // Fetch data from the API
-            fetch('http://localhost:5045/eventitems')
+            fetch('https://arvidevents.azurewebsites.net/eventitems')
                 .then(response => response.json())
                 .then(data => {
                     // Get the event list element
@@ -78,7 +78,7 @@
                 const formData = new FormData(form);
                 const eventData = Object.fromEntries(formData);
                 
-                const response = await fetch('http://localhost:5045/eventitems', {
+                const response = await fetch('https://arvidevents.azurewebsites.net/eventitems', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -126,7 +126,7 @@
                 const eventData = Object.fromEntries(formData);
                 
                 const id = idInput.value;
-                const response = await fetch(`http://localhost:5045/eventitems/${id}`, {
+                const response = await fetch(`https://arvidevents.azurewebsites.net/eventitems/${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
@@ -184,7 +184,7 @@
             
             loadBtn.addEventListener('click', async () => {
                 const id = idInput.value;
-                const response = await fetch(`http://localhost:5045/eventitems/${id}`);
+                const response = await fetch(`https://arvidevents.azurewebsites.net/eventitems/${id}`);
                 // ADD FAULT HANDLING
                 if (response.ok) {
                     const eventData = await response.json();
@@ -238,7 +238,7 @@
                 };
         
                 const id = idInput.value;
-                const response = await fetch(`http://localhost:5045/eventitems/${id}`, {
+                const response = await fetch(`https://arvidevents.azurewebsites.net/eventitems/${id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
