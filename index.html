@@ -3,6 +3,12 @@
 <head>
     <title>Event List</title>
 </head>
+<style>
+    input:disabled {
+    background-color: #ccc; /* light gray */
+    color: #888;  /* darker gray */
+}
+</style>
 <body>
     <h1>Upcoming Events</h1>
     <button id="loadEvents">Load Events</button>
@@ -65,13 +71,13 @@
             nameInput.addEventListener('input', (e) => {
                 submitButton.disabled = !e.target.value;
             });
-
+            
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
-
+                
                 const formData = new FormData(form);
                 const eventData = Object.fromEntries(formData);
-
+                
                 const response = await fetch('http://localhost:5045/eventitems', {
                     method: 'POST',
                     headers: {
@@ -79,7 +85,7 @@
                     },
                     body: JSON.stringify(eventData)
                 });
-
+                
                 if (response.ok) {
                     form.reset();
                     submitButton.disabled = true;
@@ -90,35 +96,35 @@
                 }
             });
         });
-
+        
     </script>
 
     <h1>Delete an Event</h1>
-
+    
     <form id="deleteEventForm">
         <label for="id">Id:</label>
         <input type="text" id="id" name="Id">
-
+        
         <button type="submit">Delete</button>
     </form>
-
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('deleteEventForm');
             const deleteButton = form.querySelector('button[type="submit"]');
             const idInput = form.querySelector('input[name="Id"]');
-
+            
             deleteButton.disabled = !idInput.value;
             idInput.addEventListener('input', (e) => {
                 deleteButton.disabled = !e.target.value;
             });
-
+            
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
-
+                
                 const formData = new FormData(form);
                 const eventData = Object.fromEntries(formData);
-
+                
                 const id = idInput.value;
                 const response = await fetch(`http://localhost:5045/eventitems/${id}`, {
                     method: 'DELETE',
@@ -127,7 +133,7 @@
                     },
                     body: JSON.stringify(eventData)
                 });
-
+                
                 if (response.ok) {
                     form.reset();
                     deleteButton.disabled = true;
@@ -138,7 +144,122 @@
                 }
             });
         });
+        
+        </script>
 
+    <h1>Update an Event</h1>
+
+    <form id="updateEventForm">
+        <label for="id">Id:</label>
+        <input type="text" id="id" name="Id">
+        <br>
+        <button type="button" id="loadBtn">Load</button>
+        <button type="button" id="cancelBtn" disabled>Cancel</button>
+        <br>
+        
+        <label for="date">Date:</label>
+        <input type="text" id="date" name="Date" disabled>
+        <br>
+        
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="Name" disabled>
+        <br>
+
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="Description" disabled>
+        <br>
+
+        <button type="button" id="updateBtn" disabled>Update</button>
+    </form>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('updateEventForm');
+            const loadBtn = document.getElementById('loadBtn');
+            const updateBtn = document.getElementById('updateBtn');
+            
+            const idInput = form.querySelector('input[name="Id"]');
+            const dateInput = form.querySelector('input[name="Date"]');
+            const nameInput = form.querySelector('input[name="Name"]');
+            const descriptionInput = form.querySelector('input[name="Description"]');
+            
+            loadBtn.addEventListener('click', async () => {
+                const id = idInput.value;
+                const response = await fetch(`http://localhost:5045/eventitems/${id}`);
+                // ADD FAULT HANDLING
+                if (response.ok) {
+                    const eventData = await response.json();
+                    console.log(eventData);
+                    
+                    dateInput.value = eventData.date;
+                    nameInput.value = eventData.name;
+                    descriptionInput.value = eventData.description;
+                    
+                    loadBtn.disabled = true;
+                    cancelBtn.disabled = false;
+                    idInput.disabled = true;
+                    dateInput.disabled = false;
+                    nameInput.disabled = false;
+                    descriptionInput.disabled = false;
+                    updateBtn.disabled = false;
+                }
+                else
+                {
+                    alert("No event with that ID.")
+                }
+            });
+            
+            cancelBtn.addEventListener('click', async () => {
+                form.reset();        
+                loadBtn.disabled = false;
+                cancelBtn.disabled = true;
+                idInput.disabled = false;
+                dateInput.disabled = true;
+                nameInput.disabled = true;
+                descriptionInput.disabled = true;
+                updateBtn.disabled = true;
+                
+            });
+
+            nameInput.addEventListener('input', (e) => {
+                updateBtn.disabled = !e.target.value;
+            });
+        
+            updateBtn.addEventListener('click', async () => {
+                const updatedData = {
+                    Id: idInput.value,
+                    Date: dateInput.value,
+                    Name: nameInput.value,
+                    Description: descriptionInput.value
+                };
+        
+                const id = idInput.value;
+                const response = await fetch(`http://localhost:5045/eventitems/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updatedData)
+                });
+                
+                if (response.ok) {
+                    form.reset();
+                    
+                    loadBtn.disabled = false;
+                    cancelBtn.disabled = true;
+                    idInput.disabled = false;
+                    dateInput.disabled = true;
+                    nameInput.disabled = true;
+                    descriptionInput.disabled = true;
+                    updateBtn.disabled = true;
+
+                    var loadButton = document.getElementById('loadEvents');
+                    loadButton.click();
+                } else {
+                    alert('Failed to update event.');
+                }
+            });
+        });
     </script>
+    
 </body>
 </html>

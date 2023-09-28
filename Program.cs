@@ -37,6 +37,7 @@ static async Task<IResult> GetAllEvents(EventDb db)
 
 static async Task<IResult> GetEvent(int id, EventDb db)
 {
+    Console.WriteLine("GetEvent");
     return await db.Events.FindAsync(id)
         is Event publicEvent
             ? TypedResults.Ok(publicEvent)
