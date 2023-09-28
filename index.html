@@ -25,13 +25,59 @@
                     // Add each event as a list item
                     data.forEach(event => {
                         const listItem = document.createElement('li');
-                        listItem.textContent = event.name; // Assuming the event object has a "name" property
+                        listItem.textContent = `${event.date}: ${event.name} - ${event.description}`; // Assuming the event object has "date", "name", and "description" properties
                         eventList.appendChild(listItem);
                     });
+
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
                 });
+        });
+    </script>
+
+    <h1>Submit an Event</h1>
+
+    <form id="eventForm">
+        <label for="date">Date:</label>
+        <input type="text" id="date" name="Date">
+        <br>
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="Name">
+        <br>
+
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="Description">
+        <br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('eventForm');
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const formData = new FormData(form);
+                const eventData = Object.fromEntries(formData);
+
+                const response = await fetch('http://localhost:5045/eventitems', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(eventData)
+                });
+
+                if (response.ok) {
+                    alert('Event submitted successfully.');
+                } else {
+                    alert('Failed to submit event.');
+                }
+            });
         });
     </script>
 </body>

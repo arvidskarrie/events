@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,7 +31,8 @@ app.Run();
 static async Task<IResult> GetAllEvents(EventDb db)
 {
     Console.WriteLine("GetAllEvents");
-    return TypedResults.Ok(await db.Events.ToArrayAsync());
+    var events = await db.Events.Where(e => !string.IsNullOrEmpty(e.Name)).ToArrayAsync();
+    return TypedResults.Ok(events);
 }
 
 static async Task<IResult> GetEvent(int id, EventDb db)
@@ -41,12 +43,32 @@ static async Task<IResult> GetEvent(int id, EventDb db)
             : TypedResults.NotFound();
 }
 
-static async Task<IResult> CreateEvent(Event publicEvent, EventDb db)
+static async Task<IResult> CreateEvent(HttpContext httpContext, EventDb db)
 {
+    Console.WriteLine("CreateEvent");
+    // Read JSON from request body into a string
+    string requestBody;
+    using (StreamReader reader = new StreamReader(httpContext.Request.Body))
+    {
+        requestBody = await reader.ReadToEndAsync();
+    }
+
+    // Deserialize JSON to an Event object
+    Console.WriteLine("requestBody " + requestBody);
+    Event publicEvent = JsonSerializer.Deserialize<Event>(requestBody);
+    Console.WriteLine("Event data: " + publicEvent.Name + " " + publicEvent.Id + " " + publicEvent.Description + " " + publicEvent.Date + " ");
+    // Check for null or validation
+    if (publicEvent == null)
+    {
+        return Results.BadRequest("Invalid input data");
+    }
+
+    // Add to database and save changes
     db.Events.Add(publicEvent);
     await db.SaveChangesAsync();
 
-    return TypedResults.Created($"/eventitems/{publicEvent.Id}", publicEvent);
+    // Return success response
+    return Results.Created($"/eventitems/{publicEvent.Id}", publicEvent);
 }
 
 static async Task<IResult> UpdateEvent(int id, Event inputEvent, EventDb db)

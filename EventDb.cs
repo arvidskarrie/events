@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-class EventDb : DbContext
+public class EventDb : DbContext
 {
     public EventDb(DbContextOptions<EventDb> options)
         : base(options) { }
