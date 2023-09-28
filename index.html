@@ -57,6 +57,16 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('eventForm');
+            const submitButton = form.querySelector('button[type="submit"]');
+            const nameInput = form.querySelector('input[name="Name"]');
+
+            // Initially disable the submit button if the "Name" field is empty
+            submitButton.disabled = !nameInput.value;
+
+            // Update submit button's disabled state when the "Name" field changes
+            nameInput.addEventListener('input', (e) => {
+                submitButton.disabled = !e.target.value;
+            });
 
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -74,11 +84,16 @@
 
                 if (response.ok) {
                     alert('Event submitted successfully.');
+                    // Clear all form fields
+                    form.reset();
+                    // Disable the submit button again
+                    submitButton.disabled = true;
                 } else {
                     alert('Failed to submit event.');
                 }
             });
         });
+
     </script>
 </body>
 </html>
