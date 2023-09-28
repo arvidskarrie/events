@@ -1,9 +1,12 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("appsettings.json");
-Console.WriteLine("First string:" + builder.Configuration.GetConnectionString("EventDbConnection"));
+Env.Load();
+builder.Configuration.AddEnvironmentVariables();
+Console.WriteLine("Conn string " + builder.Configuration.GetConnectionString("EventDbConnection"));
 
 builder.Services.AddDbContext<EventDb>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("EventDbConnection"))

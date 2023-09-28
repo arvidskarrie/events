@@ -220,6 +220,11 @@
                 
             });
 
+            
+            idInput.addEventListener('input', (e) => {
+                loadBtn.disabled = !e.target.value.trim();
+            });
+
             nameInput.addEventListener('input', (e) => {
                 updateBtn.disabled = !e.target.value;
             });
