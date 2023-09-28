@@ -89,6 +89,7 @@ static async Task<IResult> UpdateEvent(int id, Event inputEvent, EventDb db)
 
 static async Task<IResult> DeleteEvent(int id, EventDb db)
 {
+    Console.WriteLine("DeleteEvent");
     if (await db.Events.FindAsync(id) is Event publicEvent)
     {
         db.Events.Remove(publicEvent);

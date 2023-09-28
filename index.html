@@ -25,7 +25,7 @@
                     // Add each event as a list item
                     data.forEach(event => {
                         const listItem = document.createElement('li');
-                        listItem.textContent = `${event.date}: ${event.name} - ${event.description}`; // Assuming the event object has "date", "name", and "description" properties
+                        listItem.textContent = `${event.id}. ${event.date}: ${event.name} - ${event.description}`; // Assuming the event object has "date", "name", and "description" properties
                         eventList.appendChild(listItem);
                     });
 
@@ -38,7 +38,7 @@
 
     <h1>Submit an Event</h1>
 
-    <form id="eventForm">
+    <form id="createEventForm">
         <label for="date">Date:</label>
         <input type="text" id="date" name="Date">
         <br>
@@ -56,14 +56,12 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const form = document.getElementById('eventForm');
+            const form = document.getElementById('createEventForm');
             const submitButton = form.querySelector('button[type="submit"]');
             const nameInput = form.querySelector('input[name="Name"]');
 
-            // Initially disable the submit button if the "Name" field is empty
             submitButton.disabled = !nameInput.value;
 
-            // Update submit button's disabled state when the "Name" field changes
             nameInput.addEventListener('input', (e) => {
                 submitButton.disabled = !e.target.value;
             });
@@ -84,12 +82,57 @@
 
                 if (response.ok) {
                     alert('Event submitted successfully.');
-                    // Clear all form fields
                     form.reset();
-                    // Disable the submit button again
                     submitButton.disabled = true;
                 } else {
                     alert('Failed to submit event.');
+                }
+            });
+        });
+
+    </script>
+
+    <h1>Delete an Event</h1>
+
+    <form id="deleteEventForm">
+        <label for="id">Id:</label>
+        <input type="text" id="id" name="Id">
+
+        <button type="submit">Delete</button>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('deleteEventForm');
+            const deleteButton = form.querySelector('button[type="submit"]');
+            const idInput = form.querySelector('input[name="Id"]');
+
+            deleteButton.disabled = !idInput.value;
+            idInput.addEventListener('input', (e) => {
+                deleteButton.disabled = !e.target.value;
+            });
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const formData = new FormData(form);
+                const eventData = Object.fromEntries(formData);
+
+                const id = idInput.value;
+                const response = await fetch(`http://localhost:5045/eventitems/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(eventData)
+                });
+
+                if (response.ok) {
+                    alert('Event deleted successfully.');
+                    form.reset();
+                    deleteButton.disabled = true;
+                } else {
+                    alert('Failed to delete event.');
                 }
             });
         });
