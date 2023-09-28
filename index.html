@@ -81,9 +81,10 @@
                 });
 
                 if (response.ok) {
-                    alert('Event submitted successfully.');
                     form.reset();
                     submitButton.disabled = true;
+                    var loadButton = document.getElementById('loadEvents');
+                    loadButton.click();
                 } else {
                     alert('Failed to submit event.');
                 }
@@ -128,9 +129,10 @@
                 });
 
                 if (response.ok) {
-                    alert('Event deleted successfully.');
                     form.reset();
                     deleteButton.disabled = true;
+                    var loadButton = document.getElementById('loadEvents');
+                    loadButton.click();
                 } else {
                     alert('Failed to delete event.');
                 }
