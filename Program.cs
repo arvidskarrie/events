@@ -15,8 +15,7 @@ builder.Services.AddCors();
 
 var app = builder.Build();
 app.UseCors(builder =>  builder
-    .AllowAnyOrigin()
-    // .WithOrigins("https://arvidskarrie.github.io")
+    .WithOrigins("https://arvidskarrie.github.io")
     .AllowAnyMethod()
     .AllowAnyHeader()
 );
